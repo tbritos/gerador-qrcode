@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Interativo</title>
+    <style>
+        .faq-container {
+            width: 50%;
+            margin: auto;
+        }
+        .faq-item {
+            background: #f5f5f5;
+            margin: 5px 0;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+        .faq-answer {
+            display: none;
+            padding: 10px;
+            background: #fff;
+            border-left: 3px solid #007BFF;
+        }
+    </style>
+</head>
+<body>
+
+<div class="faq-container">
+    <div class="faq-item" onclick="toggleAnswer(1)">Pergunta 1</div>
+    <div class="faq-answer" id="answer1">Resposta para a pergunta 1.</div>
+
+    <div class="faq-item" onclick="toggleAnswer(2)">Pergunta 2</div>
+    <div class="faq-answer" id="answer2">Resposta para a pergunta 2.</div>
+
+    <div class="faq-item" onclick="toggleAnswer(3)">Pergunta 3</div>
+    <div class="faq-answer" id="answer3">Resposta para a pergunta 3.</div>
+
+    <div class="faq-item" onclick="toggleAnswer(4)">Pergunta 4</div>
+    <div class="faq-answer" id="answer4">Resposta para a pergunta 4.</div>
+
+    <div class="faq-item" onclick="toggleAnswer(5)">Pergunta 5</div>
+    <div class="faq-answer" id="answer5">Resposta para a pergunta 5.</div>
+</div>
+
+<script>
+    function toggleAnswer(id) {
+        var answer = document.getElementById('answer' + id);
+        answer.style.display = answer.style.display === "block" ? "none" : "block";
+    }
+</script>
+
+</body>
+</html>
