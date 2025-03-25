@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de CRMs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1E40AF;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .buttons label {
+            background-color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .card {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* Mostrar os cartões corretos baseados no input radio */
+        #crm:checked ~ .container .grid .card[data-category="crm"],
+        #integrador:checked ~ .container .grid .card[data-category="integrador"] {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Inputs devem estar fora da .container -->
+    <input type="radio" id="crm" name="filter" hidden checked>
+    <input type="radio" id="integrador" name="filter" hidden>
+
+    <div class="container">
+        <h2>CRM</h2>
+        <div class="buttons">
+            <label for="crm">CRM</label>
+            <label for="integrador">INTEGRADOR</label>
+        </div>
+        <div class="grid">
+            <div class="card" data-category="crm">LeadMob</div>
+            <div class="card" data-category="crm">Salesforce</div>
+            <div class="card" data-category="crm">F1 Sales</div>
+            <div class="card" data-category="integrador">Nissan CRM</div>
+            <div class="card" data-category="integrador">DCJ Grow</div>
+            <div class="card" data-category="integrador">Mercedes CRM</div>
+        </div>
+    </div>
+</body>
+</html>

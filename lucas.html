@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de CRMs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1E40AF;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .buttons button {
+            background-color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .card {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function filterCategory(category) {
+            let cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                if (card.classList.contains(category) || category === 'all') {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>CRM</h2>
+        <div class="buttons">
+            <button onclick="filterCategory('CRM')">CRM</button>
+            <button onclick="filterCategory('INTEGRADOR')">INTEGRADOR</button>
+            <button onclick="filterCategory('EMAIL')">E-MAIL MARKETING</button>
+            <button onclick="filterCategory('FI')">F&I</button>
+            <button onclick="filterCategory('CHAT')">CHAT</button>
+        </div>
+        <div class="grid">
+            <div class="card CRM">LeadMob</div>
+            <div class="card CRM">Salesforce</div>
+            <div class="card CRM">F1 Sales</div>
+            <div class="card INTEGRADOR">Nissan CRM</div>
+            <div class="card INTEGRADOR">DCJ Grow</div>
+            <div class="card INTEGRADOR">Mercedes CRM</div>
+            <div class="card EMAIL">Syonet</div>
+            <div class="card EMAIL">SugarCRM</div>
+            <div class="card EMAIL">RD Station</div>
+            <div class="card FI">MyHonda</div>
+            <div class="card FI">Kolekto</div>
+            <div class="card CHAT">Followize</div>
+        </div>
+    </div>
+</body>
+</html>

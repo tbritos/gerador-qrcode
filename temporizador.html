@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporizador</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        #timer {
+            font-size: 2em;
+            color: #0078D4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contagem Regressiva</h1>
+    <div id="timer"></div>
+
+    <script>
+        // Defina a data para a qual será feito o countdown
+        const targetDate = new Date("March 14, 2025 23:59:59").getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            // Cálculos para dias, horas, minutos e segundos
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Exibir no elemento HTML
+            document.getElementById("timer").innerHTML =
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            // Parar quando atingir a data alvo
+            if (distance < 0) {
+                clearInterval(interval);
+                document.getElementById("timer").innerHTML = "Tempo esgotado!";
+            }
+        }
+
+        // Atualizar o temporizador a cada segundo
+        const interval = setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>

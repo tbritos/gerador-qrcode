@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade de Cartões com Filtro</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .filtros {
+            margin-bottom: 20px;
+        }
+
+        .filtro-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .filtro-btn.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .grade-cartoes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .cartao {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cartao h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Estrutura HTML -->
+    <div class="filtros">
+        <button class="filtro-btn active" data-categoria="todos">Todos</button>
+        <button class="filtro-btn" data-categoria="categoria1">Categoria 1</button>
+        <button class="filtro-btn" data-categoria="categoria2">Categoria 2</button>
+        <button class="filtro-btn" data-categoria="categoria3">Categoria 3</button>
+    </div>
+
+    <div class="grade-cartoes">
+        <div class="cartao" data-categoria="categoria1">
+            <h2>Cartão 1</h2>
+            <p>Este é o cartão da categoria 1.</p>
+        </div>
+        <div class="cartao" data-categoria="categoria2">
+            <h2>Cartão 2</h2>
+            <p>Este é o cartão da categoria 2.</p>
+        </div>
+        <div class="cartao" data-categoria="categoria3">
+            <h2>Cartão 3</h2>
+            <p>Este é o cartão da categoria 3.</p>
+        </div>
+        <div class="cartao" data-categoria="categoria1">
+            <h2>Cartão 4</h2>
+            <p>Este é outro cartão da categoria 1.</p>
+        </div>
+    </div>
+
+    <script>
+        // Lógica JavaScript
+        document.addEventListener('DOMContentLoaded', function () {
+            const filtroBtns = document.querySelectorAll('.filtro-btn');
+            const cartoes = document.querySelectorAll('.cartao');
+
+            filtroBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    // Remove a classe 'active' de todos os botões
+                    filtroBtns.forEach(b => b.classList.remove('active'));
+                    // Adiciona a classe 'active' ao botão clicado
+                    this.classList.add('active');
+
+                    const categoria = this.getAttribute('data-categoria');
+
+                    // Filtra os cartões
+                    cartoes.forEach(cartao => {
+                        const cartaoCategoria = cartao.getAttribute('data-categoria');
+                        if (categoria === 'todos' || cartaoCategoria === categoria) {
+                            cartao.style.display = 'block';
+                        } else {
+                            cartao.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

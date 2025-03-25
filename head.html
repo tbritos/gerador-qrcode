@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PGPrime</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo img {
+            height: 40px; /* Ajuste o tamanho da logo conforme necessário */
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            position: relative;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        .submenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #333;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .submenu li a {
+            padding: 10px;
+            display: block;
+        }
+
+        nav ul li:hover .submenu {
+            display: block;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: #333;
+                position: absolute;
+                top: 60px;
+                left: 0;
+            }
+
+            nav ul li {
+                margin-right: 0;
+            }
+
+            nav ul li .submenu {
+                position: static;
+            }
+
+            .menu-icon {
+                display: block;
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <!-- Substitua "logo.png" pelo caminho da sua logo -->
+            <img src="https://imgur.com/IiQzUME.png" alt="PGPrime Logo">
+        </div>
+        <nav>
+            <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+            <ul id="nav-menu">
+                <li><a href="#">Institucional</a>
+                    <ul class="submenu">
+                        <li><a href="#">Sobre Nós</a></li>
+                        <li><a href="#">História</a></li>
+                        <li><a href="#">Equipe</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Soluções</a>
+                    <ul class="submenu">
+                        <li><a href="#">Serviços</a></li>
+                        <li><a href="#">Produtos</a></li>
+                        <li><a href="#">Consultoria</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Seminovos</a></li>
+                <li><a href="#">Ofertas</a></li>
+                <li><a href="#">Concessionárias</a></li>
+                <li><a href="#">Whatsapp</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <script>
+        // Função para alternar o menu em dispositivos móveis
+        function toggleMenu() {
+            const navMenu = document.getElementById('nav-menu');
+            navMenu.classList.toggle('active');
+        }
+
+        // Adicionando interatividade para abrir/fechar submenus
+        document.querySelectorAll('nav ul li').forEach(item => {
+            item.addEventListener('click', function() {
+                const submenu = this.querySelector('.submenu');
+                if (submenu) {
+                    submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
