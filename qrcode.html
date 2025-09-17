@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Direcionador de Links com Google Sheets</title>
+    <title>Gerador de QR Code com Google Sheets</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/umd/lucide.js"></script>
     <style>
         * {
@@ -22,39 +22,6 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-        
-        .config-section {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-        }
-        
-        .config-section h2 {
-            color: #92400e;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .config-section ol {
-            color: #78350f;
-            margin-left: 20px;
-        }
-        
-        .config-section ol li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        
-        .config-section code {
-            background: #fbbf24;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.9em;
         }
         
         .header {
@@ -102,11 +69,6 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
-        .config-input {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        
         .btn {
             padding: 12px 24px;
             border: none;
@@ -132,15 +94,6 @@
         .btn-primary:disabled {
             background: #9ca3af;
             cursor: not-allowed;
-        }
-        
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: #059669;
         }
         
         .btn-danger {
@@ -371,46 +324,13 @@
 </head>
 <body>
     <div class="container">
-        <div class="config-section">
-            <h2>
-                <i data-lucide="settings"></i>
-                Configuração do Google Sheets
-            </h2>
-            <p style="margin-bottom: 15px; color: #78350f;"><strong>Siga esses passos para conectar com Google Sheets:</strong></p>
-            
-            <ol>
-                <li>Acesse <code>https://script.google.com</code></li>
-                <li>Clique em <code>Novo projeto</code></li>
-                <li>Cole o código que vou te fornecer</li>
-                <li>Clique em <code>Implantar > Nova implantação</code></li>
-                <li>Escolha tipo <code>Aplicativo da web</code></li>
-                <li>Em "Quem tem acesso" escolha <code>Qualquer pessoa</code></li>
-                <li>Copie a <code>URL do aplicativo da web</code> e cole aqui embaixo</li>
-                <li>Será criada automaticamente uma planilha <code>Direcionador de Links</code> no seu Google Drive</li>
-            </ol>
-            
-            <div style="margin-top: 20px;">
-                <input 
-                    type="url" 
-                    id="sheetsUrl" 
-                    class="config-input"
-                    placeholder="Cole aqui a URL do Google Apps Script (ex: https://script.google.com/...)"
-                >
-                <button class="btn btn-success" onclick="connectSheets()" id="connectBtn">
-                    <i data-lucide="link"></i>
-                    Conectar Google Sheets
-                </button>
-                <span id="connectionStatus" class="status-indicator status-disconnected">Desconectado</span>
-            </div>
-        </div>
-
         <div class="header">
             <h1>
                 <i data-lucide="link"></i>
-                Direcionador de Links
+                Gerador de QR Code
                 <i data-lucide="sheet" style="color: #10b981;"></i>
             </h1>
-            <p>Crie links curtos com QR Code salvos no Google Sheets</p>
+            <p>Seu gerador de links conectado ao Google Sheets</p>
         </div>
 
         <div class="header">
@@ -432,7 +352,7 @@
         <div id="emptyState" class="empty-state">
             <i data-lucide="qr-code"></i>
             <h3>Nenhum link criado ainda</h3>
-            <p>Configure o Google Sheets e crie seu primeiro link!</p>
+            <p>Seu gerador está pronto. Crie seu primeiro link!</p>
         </div>
 
         <div id="summaryCard" class="summary-card" style="display: none;">
@@ -459,35 +379,33 @@
 
     <script>
         let shortLinks = [];
-        let sheetsConnected = false;
-        let sheetsUrl = '';
+        let sheetsUrl = 'https://script.google.com/macros/s/AKfycbwNzosOaoSgIPK5UmU3GiHRU75cSfT5h6_A2GNEZM4MWP92hTkxjSr6bjBxMsz7wR10gw/exec'; // Cole a URL do Google Apps Script aqui
         
-        // Carregar configuração salva
-        function loadConfig() {
+        // Inicializa a página e carrega os dados
+        async function init() {
+            lucide.createIcons();
+
+            // Desabilita o botão enquanto a página carrega
+            document.getElementById('createBtn').disabled = true;
+            document.getElementById('urlInput').disabled = true;
+
             const savedUrl = localStorage.getItem('sheetsUrl');
             if (savedUrl) {
-                document.getElementById('sheetsUrl').value = savedUrl;
                 sheetsUrl = savedUrl;
-                connectSheets(true); // Tentar reconectar silenciosamente
+                await loadData();
+            } else {
+                alert('A URL do Google Apps Script não foi encontrada. Por favor, cole-a no arquivo HTML e suba para o GitHub.');
             }
+
+            // Habilita os botões após o carregamento
+            document.getElementById('createBtn').disabled = false;
+            document.getElementById('urlInput').disabled = false;
         }
         
-        // Conectar com Google Sheets
-        async function connectSheets(silent = false) {
-            const urlInput = document.getElementById('sheetsUrl');
-            const url = urlInput.value.trim();
-            
-            if (!url) {
-                if (!silent) alert('Por favor, cole a URL do Google Apps Script');
-                return;
-            }
-            
-            const connectBtn = document.getElementById('connectBtn');
-            connectBtn.innerHTML = '<i data-lucide="loader-2"></i> Conectando...';
-            connectBtn.disabled = true;
-            
+        // Carrega dados do Google Sheets
+        async function loadData() {
             try {
-                const response = await fetch(url, {
+                const response = await fetch(sheetsUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -500,10 +418,6 @@
                 if (response.ok) {
                     const result = await response.json();
                     if (result.success) {
-                        sheetsUrl = url;
-                        sheetsConnected = true;
-                        localStorage.setItem('sheetsUrl', url);
-                        updateConnectionStatus(true);
                         shortLinks = result.data.map(link => ({
                             id: link.ID,
                             originalUrl: link.URLOriginal,
@@ -515,45 +429,19 @@
                         }));
                         renderLinks();
                         updateSummary();
-                        if (!silent) alert('Conectado com sucesso! Os dados foram carregados.');
                     } else {
-                        throw new Error('Erro na resposta da API: ' + result.data);
+                        console.error('Erro na resposta da API: ' + result.data);
                     }
                 } else {
-                    throw new Error('Erro HTTP: ' + response.status);
+                    console.error('Erro HTTP: ' + response.status);
                 }
             } catch (error) {
                 console.error('Erro ao conectar ou carregar dados:', error);
-                if (!silent) alert('Erro ao conectar ou carregar dados. Verifique a URL e a configuração de acesso no Google Apps Script.');
-                updateConnectionStatus(false);
             }
-            
-            connectBtn.innerHTML = '<i data-lucide="link"></i> Conectar Google Sheets';
-            connectBtn.disabled = false;
-            lucide.createIcons();
-        }
-        
-        // Atualizar status da conexão
-        function updateConnectionStatus(connected) {
-            const status = document.getElementById('connectionStatus');
-            const createBtn = document.getElementById('createBtn');
-            
-            if (connected) {
-                status.textContent = 'Conectado';
-                status.className = 'status-indicator status-connected';
-                createBtn.disabled = false;
-            } else {
-                status.textContent = 'Desconectado';
-                status.className = 'status-indicator status-disconnected';
-                createBtn.disabled = true;
-            }
-            
-            updateCreateButton();
         }
         
         // Salvar no Google Sheets
         async function saveToSheets(linkData) {
-            if (!sheetsConnected) return { success: false };
             try {
                 const response = await fetch(sheetsUrl, {
                     method: 'POST',
@@ -566,18 +454,15 @@
                     })
                 });
                 const result = await response.json();
-                console.log('Dados salvos no Google Sheets:', result);
                 return result;
             } catch (error) {
                 console.error('Erro ao salvar:', error);
-                alert('Erro ao salvar no Google Sheets. Tente novamente.');
                 return { success: false };
             }
         }
         
         // Atualizar no Google Sheets
         async function updateInSheets(linkId, updateData) {
-            if (!sheetsConnected) return { success: false };
             try {
                 const response = await fetch(sheetsUrl, {
                     method: 'POST',
@@ -591,11 +476,9 @@
                     })
                 });
                 const result = await response.json();
-                console.log('Dados atualizados no Google Sheets:', result);
                 return result;
             } catch (error) {
                 console.error('Erro ao atualizar:', error);
-                alert('Erro ao atualizar o Google Sheets. Tente novamente.');
                 return { success: false };
             }
         }
@@ -607,7 +490,7 @@
         
         // Gerar QR Code
         function generateQRCode(url) {
-            return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+            return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=\${encodeURIComponent(url)}`;
         }
         
         // Validar URL
@@ -625,7 +508,7 @@
             const urlInput = document.getElementById('urlInput');
             const originalUrl = urlInput.value.trim();
             
-            if (!originalUrl || !sheetsConnected) return;
+            if (!originalUrl) return;
             
             if (!isValidUrl(originalUrl)) {
                 alert('Por favor, insira uma URL válida (incluindo http:// ou https://)');
@@ -637,7 +520,7 @@
             createBtn.disabled = true;
             
             const shortId = generateShortId();
-            const shortUrl = `${sheetsUrl}?id=${shortId}`; // A URL curta agora aponta para o Apps Script
+            const shortUrl = `${sheetsUrl}?id=\${shortId}`;
             const qrCodeUrl = generateQRCode(shortUrl);
             
             const newLink = {
@@ -662,8 +545,6 @@
             
             createBtn.innerHTML = '<i data-lucide="qr-code"></i> Gerar Link';
             createBtn.disabled = false;
-            updateCreateButton();
-            lucide.createIcons();
         }
         
         // Renderizar links
@@ -685,15 +566,15 @@
                         <div class="link-info">
                             <div style="margin-bottom: 20px;">
                                 <h3>Link Original</h3>
-                                <p class="link-url">${link.originalUrl}</p>
+                                <p class="link-url">\${link.originalUrl}</p>
                             </div>
                             
                             <div style="margin-bottom: 20px;">
                                 <h3>Link Curto</h3>
                                 <div class="url-row">
-                                    <p class="link-url" style="color: #10b981;">${link.shortUrl}</p>
-                                    <button class="copy-btn" onclick="copyToClipboard('${link.shortUrl}', 'short-${link.id}')" title="Copiar link curto">
-                                        <i data-lucide="copy" id="icon-short-${link.id}"></i>
+                                    <p class="link-url" style="color: #10b981;">\${link.shortUrl}</p>
+                                    <button class="copy-btn" onclick="copyToClipboard('\${link.shortUrl}', 'short-\${link.id}')" title="Copiar link curto">
+                                        <i data-lucide="copy" id="icon-short-\${link.id}"></i>
                                     </button>
                                 </div>
                             </div>
@@ -704,24 +585,24 @@
                                         <i data-lucide="mouse-pointer"></i>
                                         <span style="font-weight: 600;">Cliques no Link</span>
                                     </div>
-                                    <div class="stat-number">${link.clicks}</div>
+                                    <div class="stat-number">\${link.clicks}</div>
                                 </div>
                                 
                                 <div class="stat-card stat-green">
-                                    <div style="display: flex; align-s-center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
                                         <i data-lucide="eye"></i>
                                         <span style="font-weight: 600;">QR Code Lido</span>
                                     </div>
-                                    <div class="stat-number">${link.qrScans}</div>
+                                    <div class="stat-number">\${link.qrScans}</div>
                                 </div>
                             </div>
                             
                             <div class="buttons-row">
-                                <button class="btn btn-primary" onclick="handleLinkClick('${link.id}', '${link.originalUrl}')">
+                                <button class="btn btn-primary" onclick="handleLinkClick('\${link.id}', '\${link.originalUrl}')">
                                     <i data-lucide="mouse-pointer"></i>
                                     Testar Link
                                 </button>
-                                <button class="btn btn-danger" onclick="deleteLink('${link.id}')">
+                                <button class="btn btn-danger" onclick="deleteLink('\${link.id}')">
                                     Deletar
                                 </button>
                             </div>
@@ -730,15 +611,15 @@
                         <div class="qr-section">
                             <h3>QR Code</h3>
                             <div class="qr-container">
-                                <img src="${link.qrCodeUrl}" alt="QR Code" title="Escaneie para testar o QR Code e atualizar as estatísticas.">
+                                <img src="\${link.qrCodeUrl}" alt="QR Code" title="Escaneie para testar o QR Code e atualizar as estatísticas.">
                             </div>
                             <div class="qr-buttons">
-                                <a href="${link.qrCodeUrl}" download="qrcode-${link.id}.png" class="btn btn-secondary" style="text-decoration: none; text-align: center;">
+                                <a href="\${link.qrCodeUrl}" download="qrcode-\${link.id}.png" class="btn btn-secondary" style="text-decoration: none; text-align: center;">
                                     Baixar QR Code
                                 </a>
                             </div>
                             <p style="font-size: 0.8rem; color: #6b7280; margin-top: 10px;">
-                                Criado em: ${link.created}
+                                Criado em: \${link.created}
                             </p>
                         </div>
                     </div>
@@ -748,7 +629,6 @@
             lucide.createIcons();
         }
         
-        // Atualizar resumo
         function updateSummary() {
             const summaryCard = document.getElementById('summaryCard');
             
@@ -767,7 +647,6 @@
             document.getElementById('totalScans').textContent = totalScans;
         }
         
-        // Manipular clique no link
         async function handleLinkClick(id, url) {
             const linkIndex = shortLinks.findIndex(link => link.id === id);
             if (linkIndex !== -1) {
@@ -780,11 +659,10 @@
             window.open(url, '_blank');
         }
         
-        // Copiar para área de transferência
         async function copyToClipboard(text, iconId) {
             try {
                 await navigator.clipboard.writeText(text);
-                const icon = document.getElementById(`icon-${iconId}`);
+                const icon = document.getElementById(`icon-\${iconId}`);
                 if (icon) {
                     icon.setAttribute('data-lucide', 'check');
                     icon.parentElement.classList.add('copy-success');
@@ -802,7 +680,6 @@
             }
         }
         
-        // Deletar link
         async function deleteLink(id) {
             if (confirm('Tem certeza que deseja deletar este link?')) {
                 const response = await fetch(sheetsUrl, {
@@ -822,14 +699,12 @@
             }
         }
         
-        // Atualizar botão criar
         function updateCreateButton() {
             const urlInput = document.getElementById('urlInput');
             const createBtn = document.getElementById('createBtn');
-            createBtn.disabled = !urlInput.value.trim() || !sheetsConnected;
+            createBtn.disabled = !urlInput.value.trim();
         }
         
-        // Event listeners
         document.getElementById('urlInput').addEventListener('input', updateCreateButton);
         document.getElementById('urlInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !this.disabled) {
@@ -837,10 +712,8 @@
             }
         });
         
-        // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
-            lucide.createIcons();
-            loadConfig();
+            init();
         });
     </script>
 </body>
