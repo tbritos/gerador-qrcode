@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direcionador de Links com Google Sheets</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f9fafb;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .config-section {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .config-section h2 {
+            color: #92400e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .config-section ol {
+            color: #78350f;
+            margin-left: 20px;
+        }
+        
+        .config-section ol li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .config-section code {
+            background: #fbbf24;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #1f2937;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .header p {
+            color: #6b7280;
+        }
+        
+        .form-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .form-section input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-section input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .config-input {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .link-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .link-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .link-info h3 {
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .link-url {
+            color: #3b82f6;
+            word-break: break-all;
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-blue {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+        
+        .stat-green {
+            background: #f0fdf4;
+            color: #166534;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .qr-section {
+            text-align: center;
+        }
+        
+        .qr-section h3 {
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        
+        .qr-container {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .qr-container img {
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .qr-container img:hover {
+            transform: scale(1.05);
+        }
+        
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .qr-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+        
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .summary-stat {
+            text-align: center;
+        }
+        
+        .summary-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            color: #6b7280;
+            transition: color 0.2s;
+        }
+        
+        .copy-btn:hover {
+            color: #3b82f6;
+        }
+        
+        .copy-success {
+            color: #10b981 !important;
+        }
+        
+        .url-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .url-row p {
+            flex: 1;
+        }
+        
+        .status-indicator {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-connected {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-disconnected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .form-section {
+                flex-direction: column;
+            }
+            
+            .form-section input {
+                min-width: auto;
+            }
+            
+            .link-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .buttons-row {
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="config-section">
+            <h2>
+                <i data-lucide="settings"></i>
+                Configuração do Google Sheets
+            </h2>
+            <p style="margin-bottom: 15px; color: #78350f;"><strong>Siga esses passos para conectar com Google Sheets:</strong></p>
+            
+            <ol>
+                <li>Acesse <code>https://script.google.com</code></li>
+                <li>Clique em <code>Novo projeto</code></li>
+                <li>Cole o código que vou te fornecer</li>
+                <li>Clique em <code>Implantar > Nova implantação</code></li>
+                <li>Escolha tipo <code>Aplicativo da web</code></li>
+                <li>Em "Quem tem acesso" escolha <code>Qualquer pessoa</code></li>
+                <li>Copie a <code>URL do aplicativo da web</code> e cole aqui embaixo</li>
+                <li>Será criada automaticamente uma planilha <code>Direcionador de Links</code> no seu Google Drive</li>
+            </ol>
+            
+            <div style="margin-top: 20px;">
+                <input 
+                    type="url" 
+                    id="sheetsUrl" 
+                    class="config-input"
+                    placeholder="Cole aqui a URL do Google Apps Script (ex: https://script.google.com/...)"
+                >
+                <button class="btn btn-success" onclick="connectSheets()" id="connectBtn">
+                    <i data-lucide="link"></i>
+                    Conectar Google Sheets
+                </button>
+                <span id="connectionStatus" class="status-indicator status-disconnected">Desconectado</span>
+            </div>
+        </div>
+
+        <div class="header">
+            <h1>
+                <i data-lucide="link"></i>
+                Direcionador de Links
+                <i data-lucide="sheet" style="color: #10b981;"></i>
+            </h1>
+            <p>Crie links curtos com QR Code salvos no Google Sheets</p>
+        </div>
+
+        <div class="header">
+            <div class="form-section">
+                <input 
+                    type="url" 
+                    id="urlInput" 
+                    placeholder="Cole sua URL aqui (ex: https://exemplo.com)"
+                >
+                <button class="btn btn-primary" onclick="createShortLink()" id="createBtn" disabled>
+                    <i data-lucide="qr-code"></i>
+                    Gerar Link
+                </button>
+            </div>
+        </div>
+
+        <div id="linksContainer"></div>
+
+        <div id="emptyState" class="empty-state">
+            <i data-lucide="qr-code"></i>
+            <h3>Nenhum link criado ainda</h3>
+            <p>Configure o Google Sheets e crie seu primeiro link!</p>
+        </div>
+
+        <div id="summaryCard" class="summary-card" style="display: none;">
+            <h2 style="display: flex; align-items: center; gap: 12px; color: #1f2937; margin-bottom: 0;">
+                <i data-lucide="bar-chart-3"></i>
+                Resumo Geral
+            </h2>
+            <div class="summary-grid">
+                <div class="summary-stat">
+                    <div class="summary-number" style="color: #3b82f6;" id="totalLinks">0</div>
+                    <p style="color: #6b7280;">Links Criados</p>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-number" style="color: #10b981;" id="totalClicks">0</div>
+                    <p style="color: #6b7280;">Total de Cliques</p>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-number" style="color: #8b5cf6;" id="totalScans">0</div>
+                    <p style="color: #6b7280;">Total QR Scans</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let shortLinks = [];
+        let sheetsConnected = false;
+        let sheetsUrl = '';
+        
+        // Carregar configuração salva
+        function loadConfig() {
+            const savedUrl = localStorage.getItem('sheetsUrl');
+            if (savedUrl) {
+                document.getElementById('sheetsUrl').value = savedUrl;
+                sheetsUrl = savedUrl;
+                connectSheets(true); // Tentar reconectar silenciosamente
+            }
+        }
+        
+        // Conectar com Google Sheets
+        async function connectSheets(silent = false) {
+            const urlInput = document.getElementById('sheetsUrl');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                if (!silent) alert('Por favor, cole a URL do Google Apps Script');
+                return;
+            }
+            
+            const connectBtn = document.getElementById('connectBtn');
+            connectBtn.innerHTML = '<i data-lucide="loader-2"></i> Conectando...';
+            connectBtn.disabled = true;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'read'
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        sheetsUrl = url;
+                        sheetsConnected = true;
+                        localStorage.setItem('sheetsUrl', url);
+                        updateConnectionStatus(true);
+                        shortLinks = result.data.map(link => ({
+                            id: link.ID,
+                            originalUrl: link.URLOriginal,
+                            shortUrl: link.URLCurta,
+                            qrCodeUrl: link.QRCodeURL,
+                            clicks: parseInt(link.Cliques, 10),
+                            qrScans: parseInt(link.LeiturasQR, 10),
+                            created: link.Criadoem
+                        }));
+                        renderLinks();
+                        updateSummary();
+                        if (!silent) alert('Conectado com sucesso! Os dados foram carregados.');
+                    } else {
+                        throw new Error('Erro na resposta da API: ' + result.data);
+                    }
+                } else {
+                    throw new Error('Erro HTTP: ' + response.status);
+                }
+            } catch (error) {
+                console.error('Erro ao conectar ou carregar dados:', error);
+                if (!silent) alert('Erro ao conectar ou carregar dados. Verifique a URL e a configuração de acesso no Google Apps Script.');
+                updateConnectionStatus(false);
+            }
+            
+            connectBtn.innerHTML = '<i data-lucide="link"></i> Conectar Google Sheets';
+            connectBtn.disabled = false;
+            lucide.createIcons();
+        }
+        
+        // Atualizar status da conexão
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            const createBtn = document.getElementById('createBtn');
+            
+            if (connected) {
+                status.textContent = 'Conectado';
+                status.className = 'status-indicator status-connected';
+                createBtn.disabled = false;
+            } else {
+                status.textContent = 'Desconectado';
+                status.className = 'status-indicator status-disconnected';
+                createBtn.disabled = true;
+            }
+            
+            updateCreateButton();
+        }
+        
+        // Salvar no Google Sheets
+        async function saveToSheets(linkData) {
+            if (!sheetsConnected) return { success: false };
+            try {
+                const response = await fetch(sheetsUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'create',
+                        data: linkData
+                    })
+                });
+                const result = await response.json();
+                console.log('Dados salvos no Google Sheets:', result);
+                return result;
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                alert('Erro ao salvar no Google Sheets. Tente novamente.');
+                return { success: false };
+            }
+        }
+        
+        // Atualizar no Google Sheets
+        async function updateInSheets(linkId, updateData) {
+            if (!sheetsConnected) return { success: false };
+            try {
+                const response = await fetch(sheetsUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'update',
+                        id: linkId,
+                        data: updateData
+                    })
+                });
+                const result = await response.json();
+                console.log('Dados atualizados no Google Sheets:', result);
+                return result;
+            } catch (error) {
+                console.error('Erro ao atualizar:', error);
+                alert('Erro ao atualizar o Google Sheets. Tente novamente.');
+                return { success: false };
+            }
+        }
+        
+        // Gerar ID único
+        function generateShortId() {
+            return Math.random().toString(36).substr(2, 8);
+        }
+        
+        // Gerar QR Code
+        function generateQRCode(url) {
+            return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+        }
+        
+        // Validar URL
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+        
+        // Criar link curto
+        async function createShortLink() {
+            const urlInput = document.getElementById('urlInput');
+            const originalUrl = urlInput.value.trim();
+            
+            if (!originalUrl || !sheetsConnected) return;
+            
+            if (!isValidUrl(originalUrl)) {
+                alert('Por favor, insira uma URL válida (incluindo http:// ou https://)');
+                return;
+            }
+            
+            const createBtn = document.getElementById('createBtn');
+            createBtn.innerHTML = '<i data-lucide="loader-2"></i> Criando...';
+            createBtn.disabled = true;
+            
+            const shortId = generateShortId();
+            const shortUrl = `${sheetsUrl}?id=${shortId}`; // A URL curta agora aponta para o Apps Script
+            const qrCodeUrl = generateQRCode(shortUrl);
+            
+            const newLink = {
+                id: shortId,
+                originalUrl,
+                shortUrl,
+                qrCodeUrl,
+                clicks: 0,
+                qrScans: 0,
+                created: new Date().toLocaleString('pt-BR')
+            };
+            
+            const saveResult = await saveToSheets(newLink);
+            
+            if (saveResult.success) {
+                shortLinks.unshift(newLink);
+                renderLinks();
+                updateSummary();
+                urlInput.value = '';
+                alert('Link e QR Code criados e salvos no Google Sheets!');
+            }
+            
+            createBtn.innerHTML = '<i data-lucide="qr-code"></i> Gerar Link';
+            createBtn.disabled = false;
+            updateCreateButton();
+            lucide.createIcons();
+        }
+        
+        // Renderizar links
+        function renderLinks() {
+            const container = document.getElementById('linksContainer');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (shortLinks.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            container.innerHTML = shortLinks.map(link => `
+                <div class="link-card">
+                    <div class="link-grid">
+                        <div class="link-info">
+                            <div style="margin-bottom: 20px;">
+                                <h3>Link Original</h3>
+                                <p class="link-url">${link.originalUrl}</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h3>Link Curto</h3>
+                                <div class="url-row">
+                                    <p class="link-url" style="color: #10b981;">${link.shortUrl}</p>
+                                    <button class="copy-btn" onclick="copyToClipboard('${link.shortUrl}', 'short-${link.id}')" title="Copiar link curto">
+                                        <i data-lucide="copy" id="icon-short-${link.id}"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-card stat-blue">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                                        <i data-lucide="mouse-pointer"></i>
+                                        <span style="font-weight: 600;">Cliques no Link</span>
+                                    </div>
+                                    <div class="stat-number">${link.clicks}</div>
+                                </div>
+                                
+                                <div class="stat-card stat-green">
+                                    <div style="display: flex; align-s-center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                                        <i data-lucide="eye"></i>
+                                        <span style="font-weight: 600;">QR Code Lido</span>
+                                    </div>
+                                    <div class="stat-number">${link.qrScans}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="buttons-row">
+                                <button class="btn btn-primary" onclick="handleLinkClick('${link.id}', '${link.originalUrl}')">
+                                    <i data-lucide="mouse-pointer"></i>
+                                    Testar Link
+                                </button>
+                                <button class="btn btn-danger" onclick="deleteLink('${link.id}')">
+                                    Deletar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="qr-section">
+                            <h3>QR Code</h3>
+                            <div class="qr-container">
+                                <img src="${link.qrCodeUrl}" alt="QR Code" title="Escaneie para testar o QR Code e atualizar as estatísticas.">
+                            </div>
+                            <div class="qr-buttons">
+                                <a href="${link.qrCodeUrl}" download="qrcode-${link.id}.png" class="btn btn-secondary" style="text-decoration: none; text-align: center;">
+                                    Baixar QR Code
+                                </a>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #6b7280; margin-top: 10px;">
+                                Criado em: ${link.created}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+        
+        // Atualizar resumo
+        function updateSummary() {
+            const summaryCard = document.getElementById('summaryCard');
+            
+            if (shortLinks.length === 0) {
+                summaryCard.style.display = 'none';
+                return;
+            }
+            
+            summaryCard.style.display = 'block';
+            
+            const totalClicks = shortLinks.reduce((sum, link) => sum + link.clicks, 0);
+            const totalScans = shortLinks.reduce((sum, link) => sum + link.qrScans, 0);
+            
+            document.getElementById('totalLinks').textContent = shortLinks.length;
+            document.getElementById('totalClicks').textContent = totalClicks;
+            document.getElementById('totalScans').textContent = totalScans;
+        }
+        
+        // Manipular clique no link
+        async function handleLinkClick(id, url) {
+            const linkIndex = shortLinks.findIndex(link => link.id === id);
+            if (linkIndex !== -1) {
+                shortLinks[linkIndex].clicks++;
+                await updateInSheets(id, { clicks: shortLinks[linkIndex].clicks });
+                renderLinks();
+                updateSummary();
+            }
+            
+            window.open(url, '_blank');
+        }
+        
+        // Copiar para área de transferência
+        async function copyToClipboard(text, iconId) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const icon = document.getElementById(`icon-${iconId}`);
+                if (icon) {
+                    icon.setAttribute('data-lucide', 'check');
+                    icon.parentElement.classList.add('copy-success');
+                    lucide.createIcons();
+                    
+                    setTimeout(() => {
+                        icon.setAttribute('data-lucide', 'copy');
+                        icon.parentElement.classList.remove('copy-success');
+                        lucide.createIcons();
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error('Erro ao copiar:', err);
+                alert('Não foi possível copiar o link');
+            }
+        }
+        
+        // Deletar link
+        async function deleteLink(id) {
+            if (confirm('Tem certeza que deseja deletar este link?')) {
+                const response = await fetch(sheetsUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'delete', id: id })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    shortLinks = shortLinks.filter(link => link.id !== id);
+                    renderLinks();
+                    updateSummary();
+                    alert('Link deletado com sucesso!');
+                } else {
+                    alert('Erro ao deletar o link do Google Sheets.');
+                }
+            }
+        }
+        
+        // Atualizar botão criar
+        function updateCreateButton() {
+            const urlInput = document.getElementById('urlInput');
+            const createBtn = document.getElementById('createBtn');
+            createBtn.disabled = !urlInput.value.trim() || !sheetsConnected;
+        }
+        
+        // Event listeners
+        document.getElementById('urlInput').addEventListener('input', updateCreateButton);
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !this.disabled) {
+                createShortLink();
+            }
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            loadConfig();
+        });
+    </script>
+</body>
+</html>
