@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de QR Code com Google Sheets</title>
+    <title>Hub de Soluções Diárias</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/umd/lucide.js"></script>
     <style>
         * {
@@ -11,19 +11,19 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f9fafb;
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
         }
-        
+
         .header {
             background: white;
             border-radius: 12px;
@@ -32,7 +32,7 @@
             margin-bottom: 30px;
             text-align: center;
         }
-        
+
         .header h1 {
             color: #1f2937;
             font-size: 2rem;
@@ -42,33 +42,33 @@
             justify-content: center;
             gap: 12px;
         }
-        
+
         .header p {
             color: #6b7280;
         }
-        
+
         .form-section {
             display: flex;
+            flex-direction: column;
             gap: 15px;
             margin-bottom: 30px;
-            flex-wrap: wrap;
         }
-        
-        .form-section input {
-            flex: 1;
-            min-width: 250px;
+
+        .form-section input,
+        .form-section textarea {
             padding: 12px 16px;
             border: 2px solid #d1d5db;
             border-radius: 8px;
             font-size: 16px;
         }
-        
-        .form-section input:focus {
+
+        .form-section input:focus,
+        .form-section textarea:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
-        
+
         .btn {
             padding: 12px 24px;
             border: none;
@@ -78,10 +78,11 @@
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             white-space: nowrap;
         }
-        
+
         .btn-primary {
             background: #3b82f6;
             color: white;
@@ -90,164 +91,31 @@
         .btn-primary:hover {
             background: #2563eb;
         }
-        
-        .btn-primary:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-        
-        .btn-danger {
-            background: #ef4444;
+
+        .btn-green {
+            background: #10b981;
             color: white;
         }
         
-        .btn-danger:hover {
-            background: #dc2626;
+        .btn-green:hover {
+            background: #059669;
         }
-        
-        .btn-secondary {
-            background: #6b7280;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #4b5563;
-        }
-        
-        .link-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-        
-        .link-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
-        
-        .link-info h3 {
-            color: #1f2937;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-        
-        .link-url {
-            color: #3b82f6;
-            word-break: break-all;
-            margin-bottom: 20px;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .stat-blue {
-            background: #eff6ff;
-            color: #1d4ed8;
-        }
-        
-        .stat-green {
-            background: #f0fdf4;
-            color: #166534;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .qr-section {
-            text-align: center;
-        }
-        
-        .qr-section h3 {
-            margin-bottom: 15px;
-            color: #1f2937;
-        }
-        
-        .qr-container {
-            background: #f9fafb;
-            padding: 20px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-        
-        .qr-container img {
-            width: 200px;
-            height: 200px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .qr-container img:hover {
-            transform: scale(1.05);
-        }
-        
-        .buttons-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .qr-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6b7280;
-        }
-        
-        .empty-state svg {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-        
-        .summary-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            padding: 30px;
-            margin-top: 30px;
-        }
-        
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+
+        .link-result {
             margin-top: 20px;
+            padding: 15px;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            word-break: break-all;
+            display: none;
         }
-        
-        .summary-stat {
-            text-align: center;
+
+        .link-result a {
+            color: #4338ca;
+            font-weight: 600;
         }
-        
-        .summary-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        
+
         .copy-btn {
             background: none;
             border: none;
@@ -256,6 +124,7 @@
             border-radius: 4px;
             color: #6b7280;
             transition: color 0.2s;
+            margin-left: 10px;
         }
         
         .copy-btn:hover {
@@ -265,60 +134,49 @@
         .copy-success {
             color: #10b981 !important;
         }
-        
-        .url-row {
+
+        .link-row {
             display: flex;
             align-items: center;
-            gap: 10px;
         }
-        
-        .url-row p {
-            flex: 1;
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
         }
-        
-        .status-indicator {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
+
+        .nav-link {
+            padding: 15px 25px;
+            background: #e5e7eb;
+            color: #6b7280;
             font-weight: 600;
-            margin-left: 10px;
+            cursor: pointer;
+            border: 1px solid #d1d5db;
+            border-bottom: none;
+            transition: all 0.2s;
         }
-        
-        .status-connected {
-            background: #dcfce7;
-            color: #166534;
+
+        .nav-link:first-child {
+            border-top-left-radius: 8px;
+            border-right: none;
         }
-        
-        .status-disconnected {
-            background: #fee2e2;
-            color: #dc2626;
+
+        .nav-link:last-child {
+            border-top-right-radius: 8px;
         }
-        
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
+
+        .nav-link.active {
+            background: white;
+            color: #1f2937;
+            border-color: #f59e0b;
         }
-        
-        @media (max-width: 768px) {
-            .form-section {
-                flex-direction: column;
-            }
-            
-            .form-section input {
-                min-width: auto;
-            }
-            
-            .link-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .buttons-row {
-                justify-content: center;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
+
+        .tool-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 40px;
         }
     </style>
 </head>
@@ -326,121 +184,116 @@
     <div class="container">
         <div class="header">
             <h1>
-                <i data-lucide="link"></i>
-                Gerador de QR Code
-                <i data-lucide="sheet" style="color: #10b981;"></i>
+                <i data-lucide="zap"></i>
+                Hub de Ferramentas
             </h1>
-            <p>Seu gerador de links conectado ao Google Sheets</p>
+            <p>Soluções práticas para o seu dia a dia</p>
         </div>
 
-        <div class="header">
+        <div class="nav-tabs">
+            <div id="qrTab" class="nav-link active" onclick="showTool('qr-code-tool')">
+                <i data-lucide="qr-code"></i> QR Code
+            </div>
+            <div id="whatsappTab" class="nav-link" onclick="showTool('whatsapp-link-tool')">
+                <i data-lucide="message-square-text"></i> WhatsApp
+            </div>
+        </div>
+
+        <div id="qr-code-tool" class="tool-content">
+            <h2 style="text-align: center; margin-bottom: 20px;">Gerador de QR Code</h2>
             <div class="form-section">
-                <input 
-                    type="url" 
-                    id="urlInput" 
-                    placeholder="Cole sua URL aqui (ex: https://exemplo.com)"
-                >
-                <button class="btn btn-primary" onclick="createShortLink()" id="createBtn" disabled>
-                    <i data-lucide="qr-code"></i>
-                    Gerar Link
+                <input type="url" id="qrInput" placeholder="Cole sua URL aqui (ex: https://exemplo.com)">
+                <button class="btn btn-primary" onclick="generateAndSaveQrCode()" id="generateQrBtn">
+                    <i data-lucide="qr-code"></i> Gerar QR Code
+                </button>
+            </div>
+            <div id="qrResult" style="text-align: center; display: none;">
+                <img id="qrImage" src="" alt="QR Code" style="width: 200px; height: 200px; margin-bottom: 15px;">
+                <br>
+                <button class="btn btn-green" onclick="downloadQRCode()">
+                    <i data-lucide="download"></i> Baixar QR Code
                 </button>
             </div>
         </div>
 
-        <div id="linksContainer"></div>
-
-        <div id="emptyState" class="empty-state">
-            <i data-lucide="qr-code"></i>
-            <h3>Nenhum link criado ainda</h3>
-            <p>Seu gerador está pronto. Crie seu primeiro link!</p>
-        </div>
-
-        <div id="summaryCard" class="summary-card" style="display: none;">
-            <h2 style="display: flex; align-items: center; gap: 12px; color: #1f2937; margin-bottom: 0;">
-                <i data-lucide="bar-chart-3"></i>
-                Resumo Geral
-            </h2>
-            <div class="summary-grid">
-                <div class="summary-stat">
-                    <div class="summary-number" style="color: #3b82f6;" id="totalLinks">0</div>
-                    <p style="color: #6b7280;">Links Criados</p>
-                </div>
-                <div class="summary-stat">
-                    <div class="summary-number" style="color: #10b981;" id="totalClicks">0</div>
-                    <p style="color: #6b7280;">Total de Cliques</p>
-                </div>
-                <div class="summary-stat">
-                    <div class="summary-number" style="color: #8b5cf6;" id="totalScans">0</div>
-                    <p style="color: #6b7280;">Total QR Scans</p>
+        <div id="whatsapp-link-tool" class="tool-content" style="display: none;">
+            <h2 style="text-align: center; margin-bottom: 20px;">Gerador de Link WhatsApp</h2>
+            <div class="form-section">
+                <input type="tel" id="phoneInput" placeholder="Número (ex: 5511987654321)">
+                <textarea id="messageInput" rows="4" placeholder="Mensagem pré-preenchida (opcional)"></textarea>
+                <button class="btn btn-green" onclick="generateWhatsappLink()" id="generateWhatsappBtn">
+                    <i data-lucide="message-square-text"></i> Gerar Link
+                </button>
+            </div>
+            <div id="whatsappResult" class="link-result">
+                <p><strong>Link gerado:</strong></p>
+                <div class="link-row">
+                    <p id="generatedWhatsappLinkText" style="flex: 1;"></p>
+                    <button class="copy-btn" onclick="copyToClipboard('generatedWhatsappLinkText', 'whatsappCopyIcon')">
+                        <i data-lucide="copy" id="whatsappCopyIcon"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let shortLinks = [];
-        let sheetsUrl = 'https://script.google.com/a/macros/autoforce.com/s/AKfycbxQFrFqP3ODcBZKdLRGZIx599Hqeol3S7QACib0LnAoY4bvBAwrRZrFX9H5ZT3_meYFyA/exec'; // Cole a URL do Google Apps Script aqui
+        const qrTool = document.getElementById('qr-code-tool');
+        const whatsappTool = document.getElementById('whatsapp-link-tool');
+        const qrTab = document.getElementById('qrTab');
+        const whatsappTab = document.getElementById('whatsappTab');
         
-        // Inicializa a página e carrega os dados
-        async function init() {
-            lucide.createIcons();
+        let sheetsUrl = 'https://script.google.com/macros/s/AKfycbxNXjtJMEUMa75bgCq-aIQpuVOEkESShCCEmYopOep023y0yg6FVDQKKRsyJgI6RaREJQ/exec'; // << COLOQUE A URL DA SUA API DO GOOGLE APPS SCRIPT AQUI
 
-            // Desabilita o botão enquanto a página carrega
-            document.getElementById('createBtn').disabled = true;
-            document.getElementById('urlInput').disabled = true;
-
-            const savedUrl = localStorage.getItem('sheetsUrl');
-            if (savedUrl) {
-                sheetsUrl = savedUrl;
-                await loadData();
+        function showTool(toolId) {
+            if (toolId === 'qr-code-tool') {
+                qrTool.style.display = 'block';
+                whatsappTool.style.display = 'none';
+                qrTab.classList.add('active');
+                whatsappTab.classList.remove('active');
             } else {
-                alert('A URL do Google Apps Script não foi encontrada. Por favor, cole-a no arquivo HTML e suba para o GitHub.');
+                qrTool.style.display = 'none';
+                whatsappTool.style.display = 'block';
+                qrTab.classList.remove('active');
+                whatsappTab.classList.add('active');
+            }
+            lucide.createIcons();
+        }
+
+        async function generateAndSaveQrCode() {
+            const qrInput = document.getElementById('qrInput').value.trim();
+            const qrImage = document.getElementById('qrImage');
+            const qrResult = document.getElementById('qrResult');
+            const generateQrBtn = document.getElementById('generateQrBtn');
+            
+            if (!qrInput) {
+                alert('Por favor, insira uma URL.');
+                return;
             }
 
-            // Habilita os botões após o carregamento
-            document.getElementById('createBtn').disabled = false;
-            document.getElementById('urlInput').disabled = false;
-        }
-        
-        // Carrega dados do Google Sheets
-        async function loadData() {
-            try {
-                const response = await fetch(sheetsUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'read'
-                    })
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        shortLinks = result.data.map(link => ({
-                            id: link.ID,
-                            originalUrl: link.URLOriginal,
-                            shortUrl: link.URLCurta,
-                            qrCodeUrl: link.QRCodeURL,
-                            clicks: parseInt(link.Cliques, 10),
-                            qrScans: parseInt(link.LeiturasQR, 10),
-                            created: link.Criadoem
-                        }));
-                        renderLinks();
-                        updateSummary();
-                    } else {
-                        console.error('Erro na resposta da API: ' + result.data);
-                    }
-                } else {
-                    console.error('Erro HTTP: ' + response.status);
-                }
-            } catch (error) {
-                console.error('Erro ao conectar ou carregar dados:', error);
+            if (!sheetsUrl) {
+                alert('Por favor, configure a URL da API do Google Apps Script no código.');
+                return;
             }
+
+            const shortId = Math.random().toString(36).substr(2, 8);
+            const shortUrl = `${sheetsUrl}?id=\${shortId}`;
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=\${encodeURIComponent(shortUrl)}`;
+
+            await saveToSheets({
+                id: shortId,
+                originalUrl: qrInput,
+                shortUrl: shortUrl,
+                qrCodeUrl: qrCodeUrl,
+                clicks: 0,
+                qrScans: 0,
+                created: new Date().toLocaleString('pt-BR')
+            });
+
+            qrImage.src = qrCodeUrl;
+            qrResult.style.display = 'block';
         }
-        
-        // Salvar no Google Sheets
+
         async function saveToSheets(linkData) {
             try {
                 const response = await fetch(sheetsUrl, {
@@ -457,212 +310,46 @@
                 return result;
             } catch (error) {
                 console.error('Erro ao salvar:', error);
+                alert('Erro ao salvar no Google Sheets. Verifique a URL da API e a configuração de acesso.');
                 return { success: false };
             }
         }
         
-        // Atualizar no Google Sheets
-        async function updateInSheets(linkId, updateData) {
-            try {
-                const response = await fetch(sheetsUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'update',
-                        id: linkId,
-                        data: updateData
-                    })
-                });
-                const result = await response.json();
-                return result;
-            } catch (error) {
-                console.error('Erro ao atualizar:', error);
-                return { success: false };
-            }
+        function downloadQRCode() {
+            const qrImage = document.getElementById('qrImage');
+            const link = document.createElement('a');
+            link.href = qrImage.src;
+            link.download = 'qrcode.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
-        
-        // Gerar ID único
-        function generateShortId() {
-            return Math.random().toString(36).substr(2, 8);
-        }
-        
-        // Gerar QR Code
-        function generateQRCode(url) {
-            return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=\${encodeURIComponent(url)}`;
-        }
-        
-        // Validar URL
-        function isValidUrl(string) {
-            try {
-                new URL(string);
-                return true;
-            } catch (_) {
-                return false;
-            }
-        }
-        
-        // Criar link curto
-        async function createShortLink() {
-            const urlInput = document.getElementById('urlInput');
-            const originalUrl = urlInput.value.trim();
+
+        function generateWhatsappLink() {
+            const phone = document.getElementById('phoneInput').value.replace(/\D/g, '');
+            const message = document.getElementById('messageInput').value;
+            const resultDiv = document.getElementById('whatsappResult');
+            const linkText = document.getElementById('generatedWhatsappLinkText');
             
-            if (!originalUrl) return;
-            
-            if (!isValidUrl(originalUrl)) {
-                alert('Por favor, insira uma URL válida (incluindo http:// ou https://)');
+            if (!phone) {
+                alert('Por favor, insira um número de telefone.');
                 return;
             }
-            
-            const createBtn = document.getElementById('createBtn');
-            createBtn.innerHTML = '<i data-lucide="loader-2"></i> Criando...';
-            createBtn.disabled = true;
-            
-            const shortId = generateShortId();
-            const shortUrl = `${sheetsUrl}?id=\${shortId}`;
-            const qrCodeUrl = generateQRCode(shortUrl);
-            
-            const newLink = {
-                id: shortId,
-                originalUrl,
-                shortUrl,
-                qrCodeUrl,
-                clicks: 0,
-                qrScans: 0,
-                created: new Date().toLocaleString('pt-BR')
-            };
-            
-            const saveResult = await saveToSheets(newLink);
-            
-            if (saveResult.success) {
-                shortLinks.unshift(newLink);
-                renderLinks();
-                updateSummary();
-                urlInput.value = '';
-                alert('Link e QR Code criados e salvos no Google Sheets!');
+
+            let whatsappUrl = `https://wa.me/\${phone}`;
+            if (message) {
+                whatsappUrl += `?text=\${encodeURIComponent(message)}`;
             }
-            
-            createBtn.innerHTML = '<i data-lucide="qr-code"></i> Gerar Link';
-            createBtn.disabled = false;
+
+            linkText.innerHTML = `<a href="\${whatsappUrl}" target="_blank">\${whatsappUrl}</a>`;
+            resultDiv.style.display = 'block';
         }
-        
-        // Renderizar links
-        function renderLinks() {
-            const container = document.getElementById('linksContainer');
-            const emptyState = document.getElementById('emptyState');
-            
-            if (shortLinks.length === 0) {
-                container.innerHTML = '';
-                emptyState.style.display = 'block';
-                return;
-            }
-            
-            emptyState.style.display = 'none';
-            
-            container.innerHTML = shortLinks.map(link => `
-                <div class="link-card">
-                    <div class="link-grid">
-                        <div class="link-info">
-                            <div style="margin-bottom: 20px;">
-                                <h3>Link Original</h3>
-                                <p class="link-url">\${link.originalUrl}</p>
-                            </div>
-                            
-                            <div style="margin-bottom: 20px;">
-                                <h3>Link Curto</h3>
-                                <div class="url-row">
-                                    <p class="link-url" style="color: #10b981;">\${link.shortUrl}</p>
-                                    <button class="copy-btn" onclick="copyToClipboard('\${link.shortUrl}', 'short-\${link.id}')" title="Copiar link curto">
-                                        <i data-lucide="copy" id="icon-short-\${link.id}"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="stats-grid">
-                                <div class="stat-card stat-blue">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
-                                        <i data-lucide="mouse-pointer"></i>
-                                        <span style="font-weight: 600;">Cliques no Link</span>
-                                    </div>
-                                    <div class="stat-number">\${link.clicks}</div>
-                                </div>
-                                
-                                <div class="stat-card stat-green">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
-                                        <i data-lucide="eye"></i>
-                                        <span style="font-weight: 600;">QR Code Lido</span>
-                                    </div>
-                                    <div class="stat-number">\${link.qrScans}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="buttons-row">
-                                <button class="btn btn-primary" onclick="handleLinkClick('\${link.id}', '\${link.originalUrl}')">
-                                    <i data-lucide="mouse-pointer"></i>
-                                    Testar Link
-                                </button>
-                                <button class="btn btn-danger" onclick="deleteLink('\${link.id}')">
-                                    Deletar
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="qr-section">
-                            <h3>QR Code</h3>
-                            <div class="qr-container">
-                                <img src="\${link.qrCodeUrl}" alt="QR Code" title="Escaneie para testar o QR Code e atualizar as estatísticas.">
-                            </div>
-                            <div class="qr-buttons">
-                                <a href="\${link.qrCodeUrl}" download="qrcode-\${link.id}.png" class="btn btn-secondary" style="text-decoration: none; text-align: center;">
-                                    Baixar QR Code
-                                </a>
-                            </div>
-                            <p style="font-size: 0.8rem; color: #6b7280; margin-top: 10px;">
-                                Criado em: \${link.created}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            lucide.createIcons();
-        }
-        
-        function updateSummary() {
-            const summaryCard = document.getElementById('summaryCard');
-            
-            if (shortLinks.length === 0) {
-                summaryCard.style.display = 'none';
-                return;
-            }
-            
-            summaryCard.style.display = 'block';
-            
-            const totalClicks = shortLinks.reduce((sum, link) => sum + link.clicks, 0);
-            const totalScans = shortLinks.reduce((sum, link) => sum + link.qrScans, 0);
-            
-            document.getElementById('totalLinks').textContent = shortLinks.length;
-            document.getElementById('totalClicks').textContent = totalClicks;
-            document.getElementById('totalScans').textContent = totalScans;
-        }
-        
-        async function handleLinkClick(id, url) {
-            const linkIndex = shortLinks.findIndex(link => link.id === id);
-            if (linkIndex !== -1) {
-                shortLinks[linkIndex].clicks++;
-                await updateInSheets(id, { clicks: shortLinks[linkIndex].clicks });
-                renderLinks();
-                updateSummary();
-            }
-            
-            window.open(url, '_blank');
-        }
-        
-        async function copyToClipboard(text, iconId) {
+
+        async function copyToClipboard(elementId, iconId) {
+            const element = document.getElementById(elementId);
             try {
-                await navigator.clipboard.writeText(text);
-                const icon = document.getElementById(`icon-\${iconId}`);
+                await navigator.clipboard.writeText(element.textContent || element.innerText);
+                const icon = document.getElementById(iconId);
                 if (icon) {
                     icon.setAttribute('data-lucide', 'check');
                     icon.parentElement.classList.add('copy-success');
@@ -676,44 +363,12 @@
                 }
             } catch (err) {
                 console.error('Erro ao copiar:', err);
-                alert('Não foi possível copiar o link');
             }
         }
-        
-        async function deleteLink(id) {
-            if (confirm('Tem certeza que deseja deletar este link?')) {
-                const response = await fetch(sheetsUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'delete', id: id })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    shortLinks = shortLinks.filter(link => link.id !== id);
-                    renderLinks();
-                    updateSummary();
-                    alert('Link deletado com sucesso!');
-                } else {
-                    alert('Erro ao deletar o link do Google Sheets.');
-                }
-            }
-        }
-        
-        function updateCreateButton() {
-            const urlInput = document.getElementById('urlInput');
-            const createBtn = document.getElementById('createBtn');
-            createBtn.disabled = !urlInput.value.trim();
-        }
-        
-        document.getElementById('urlInput').addEventListener('input', updateCreateButton);
-        document.getElementById('urlInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !this.disabled) {
-                createShortLink();
-            }
-        });
-        
+
         document.addEventListener('DOMContentLoaded', function() {
-            init();
+            lucide.createIcons();
+            showTool('qr-code-tool');
         });
     </script>
 </body>
