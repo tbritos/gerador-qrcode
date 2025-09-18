@@ -243,7 +243,7 @@
         const qrTab = document.getElementById('qrTab');
         const whatsappTab = document.getElementById('whatsappTab');
         
-        let makeWebhookUrl = 'https://hook.us1.make.com/finfslawgokqujzsggo8ui8oyrherog3'; // << WEBHOOK DO MAKE.COM
+        let makeWebhookUrl = 'https://hook.us1.make.com/finfslawgokqujzsggo8ui8oyrherog3';
 
         function showTool(toolId) {
             if (toolId === 'qr-code-tool') {
@@ -280,7 +280,10 @@
             const shortUrl = `${makeWebhookUrl}?id=\${shortId}`;
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=\${encodeURIComponent(shortUrl)}`;
 
-            await saveToMake({
+            // AQUI ESTÁ A CORREÇÃO:
+            // Não tentamos mais ler a resposta do Make como JSON, pois o Make retorna uma resposta de texto simples.
+            // Apenas verificamos se a requisição foi bem-sucedida.
+            const responseOk = await saveToMake({
                 id: shortId,
                 originalUrl: qrInput,
                 shortUrl: shortUrl,
@@ -290,8 +293,10 @@
                 created: new Date().toLocaleString('pt-BR')
             });
 
-            qrImage.src = qrCodeUrl;
-            qrResult.style.display = 'block';
+            if (responseOk) {
+                qrImage.src = qrCodeUrl;
+                qrResult.style.display = 'block';
+            }
         }
 
         async function saveToMake(linkData) {
@@ -301,17 +306,20 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        action: 'create',
-                        data: linkData
-                    })
+                    body: JSON.stringify(linkData) // Enviamos os dados diretamente, como o Make espera.
                 });
-                const result = await response.json();
-                return result;
+                // Verificamos se a resposta foi bem-sucedida (status 200-299)
+                if (response.ok) {
+                    return true;
+                } else {
+                    console.error('Erro na resposta do Webhook:', response.status, response.statusText);
+                    alert('Erro ao salvar no Make.com. Verifique a configuração do cenário.');
+                    return false;
+                }
             } catch (error) {
-                console.error('Erro ao salvar no Make.com:', error);
-                alert('Erro ao salvar no Make.com. Verifique a URL do Webhook.');
-                return { success: false };
+                console.error('Erro ao conectar com o Webhook:', error);
+                alert('Erro ao conectar com o Make.com. Verifique a URL do Webhook.');
+                return false;
             }
         }
         
