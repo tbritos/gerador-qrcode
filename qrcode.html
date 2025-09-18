@@ -210,6 +210,15 @@
             <div id="qrResult" style="text-align: center; display: none;">
                 <img id="qrImage" src="" alt="QR Code" style="width: 200px; height: 200px; margin-bottom: 15px;">
                 <br>
+                <div class="link-result" style="display: block;">
+                    <p><strong>Link para Escaneamento:</strong></p>
+                    <div class="link-row">
+                        <p id="shortUrlText" style="flex: 1;"></p>
+                        <button class="copy-btn" onclick="copyToClipboard('shortUrlText', 'qrCopyIcon')">
+                            <i data-lucide="copy" id="qrCopyIcon"></i>
+                        </button>
+                    </div>
+                </div>
                 <button class="btn btn-green" onclick="downloadQRCode()">
                     <i data-lucide="download"></i> Baixar QR Code
                 </button>
@@ -264,7 +273,7 @@
             const qrInput = document.getElementById('qrInput').value.trim();
             const qrImage = document.getElementById('qrImage');
             const qrResult = document.getElementById('qrResult');
-            const generateQrBtn = document.getElementById('generateQrBtn');
+            const shortUrlText = document.getElementById('shortUrlText');
             
             if (!qrInput) {
                 alert('Por favor, insira uma URL.');
@@ -277,13 +286,10 @@
             }
 
             const shortId = Math.random().toString(36).substr(2, 8);
-            const shortUrl = `${makeWebhookUrl}?id=\${shortId}`;
-            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=\${encodeURIComponent(shortUrl)}`;
+            const shortUrl = makeWebhookUrl + '?originalUrl=' + encodeURIComponent(qrInput) + '&id=' + shortId;
+            const qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(shortUrl);
 
-            // AQUI ESTÁ A CORREÇÃO:
-            // Não tentamos mais ler a resposta do Make como JSON, pois o Make retorna uma resposta de texto simples.
-            // Apenas verificamos se a requisição foi bem-sucedida.
-            const responseOk = await saveToMake({
+            await saveToMake({
                 id: shortId,
                 originalUrl: qrInput,
                 shortUrl: shortUrl,
@@ -293,10 +299,9 @@
                 created: new Date().toLocaleString('pt-BR')
             });
 
-            if (responseOk) {
-                qrImage.src = qrCodeUrl;
-                qrResult.style.display = 'block';
-            }
+            qrImage.src = qrCodeUrl;
+            shortUrlText.textContent = shortUrl;
+            qrResult.style.display = 'block';
         }
 
         async function saveToMake(linkData) {
@@ -306,9 +311,8 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(linkData) // Enviamos os dados diretamente, como o Make espera.
+                    body: JSON.stringify(linkData)
                 });
-                // Verificamos se a resposta foi bem-sucedida (status 200-299)
                 if (response.ok) {
                     return true;
                 } else {
@@ -344,9 +348,9 @@
                 return;
             }
 
-            let whatsappUrl = `https://wa.me/\${phone}`;
+            let whatsappUrl = 'https://wa.me/' + phone;
             if (message) {
-                whatsappUrl += `?text=\${encodeURIComponent(message)}`;
+                whatsappUrl += '?text=' + encodeURIComponent(message);
             }
 
             linkText.innerHTML = `<a href="\${whatsappUrl}" target="_blank">\${whatsappUrl}</a>`;
