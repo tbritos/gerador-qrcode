@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rituais do Projeto IA</title>
+    <style>
+        :root {
+            --bg: #07111f;
+            --bg-soft: #0d1b2f;
+            --surface: rgba(10, 21, 38, 0.78);
+            --surface-strong: rgba(16, 30, 52, 0.92);
+            --line: rgba(140, 180, 255, 0.18);
+            --accent: #59d0ff;
+            --accent-strong: #95f0ff;
+            --accent-warm: #f7b267;
+            --text: #eff7ff;
+            --muted: #a9bdd3;
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            color: var(--text);
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(89, 208, 255, 0.22), transparent 32%),
+                radial-gradient(circle at 85% 12%, rgba(247, 178, 103, 0.16), transparent 22%),
+                linear-gradient(160deg, #06101c 0%, #081423 38%, #0b1d31 100%);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 90%);
+            opacity: 0.18;
+        }
+
+        .page-shell {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 32px 0 72px;
+        }
+
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 24px 0 72px;
+        }
+
+        .hero-panel {
+            width: 100%;
+            padding: 42px;
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            background:
+                linear-gradient(135deg, rgba(15, 28, 48, 0.88), rgba(8, 17, 31, 0.92)),
+                var(--surface);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-panel::after {
+            content: "";
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            right: -80px;
+            top: -60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(89, 208, 255, 0.28), transparent 70%);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(89, 208, 255, 0.1);
+            border: 1px solid rgba(89, 208, 255, 0.22);
+            color: var(--accent-strong);
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: Georgia, "Times New Roman", serif;
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            margin: 22px 0 18px;
+            max-width: 760px;
+            font-size: clamp(3rem, 7vw, 5.8rem);
+            line-height: 0.95;
+        }
+
+        .hero-lead {
+            max-width: 680px;
+            margin: 0 0 28px;
+            color: var(--muted);
+            font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .button.primary {
+            color: #021421;
+            background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+            box-shadow: 0 16px 32px rgba(89, 208, 255, 0.22);
+        }
+
+        .button.secondary {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            max-width: 720px;
+        }
+
+        .metric {
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .metric strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--accent-strong);
+            font-size: 1.45rem;
+        }
+
+        .metric span {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .section {
+            position: relative;
+            padding: 44px 0;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 24px;
+            margin-bottom: 26px;
+        }
+
+        .section-head h2 {
+            margin: 0 0 10px;
+            font-size: clamp(2.2rem, 4vw, 3.5rem);
+        }
+
+        .section-head p {
+            max-width: 640px;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .section-tag {
+            color: var(--accent-warm);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .ritual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            position: relative;
+            padding: 28px;
+            border-radius: 24px;
+            background:
+                linear-gradient(160deg, rgba(15, 28, 48, 0.9), rgba(12, 22, 39, 0.84));
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(89, 208, 255, 0.1), transparent 48%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 18px;
+            border-radius: 14px;
+            background: rgba(89, 208, 255, 0.12);
+            color: var(--accent-strong);
+            font-weight: 700;
+        }
+
+        .card h3 {
+            margin: 0 0 12px;
+            color: var(--text);
+            font-size: 1.6rem;
+        }
+
+        .card p {
+            margin: 0 0 22px;
+            color: var(--muted);
+            line-height: 1.75;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(247, 178, 103, 0.12);
+            color: #ffd8a6;
+            border: 1px solid rgba(247, 178, 103, 0.2);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .tools-section {
+            padding: 34px;
+            border-radius: 30px;
+            background:
+                linear-gradient(160deg, rgba(15, 28, 48, 0.95), rgba(9, 18, 32, 0.88));
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            transform-origin: top center;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .tool-card {
+            padding: 22px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(89, 208, 255, 0.22);
+            background: rgba(89, 208, 255, 0.05);
+        }
+
+        .tool-card .use-label {
+            display: block;
+            margin-bottom: 14px;
+            color: var(--text);
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .tool-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+            border-radius: 999px;
+            background: rgba(89, 208, 255, 0.12);
+            color: var(--accent-strong);
+            border: 1px solid rgba(89, 208, 255, 0.2);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .tool-text {
+            margin: 0;
+            color: #deebf8;
+            line-height: 1.65;
+        }
+
+        .tool-intro {
+            max-width: 760px;
+            margin: 0 0 24px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(46px) scale(0.98);
+            transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .stagger > * {
+            opacity: 0;
+            transform: translateY(34px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .stagger.is-visible > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger.is-visible > *:nth-child(1) { transition-delay: 0.08s; }
+        .stagger.is-visible > *:nth-child(2) { transition-delay: 0.18s; }
+        .stagger.is-visible > *:nth-child(3) { transition-delay: 0.28s; }
+        .stagger.is-visible > *:nth-child(4) { transition-delay: 0.38s; }
+        .stagger.is-visible > *:nth-child(5) { transition-delay: 0.12s; }
+        .stagger.is-visible > *:nth-child(6) { transition-delay: 0.18s; }
+        .stagger.is-visible > *:nth-child(7) { transition-delay: 0.24s; }
+        .stagger.is-visible > *:nth-child(8) { transition-delay: 0.3s; }
+        .stagger.is-visible > *:nth-child(9) { transition-delay: 0.36s; }
+        .stagger.is-visible > *:nth-child(10) { transition-delay: 0.42s; }
+        .stagger.is-visible > *:nth-child(11) { transition-delay: 0.48s; }
+        .stagger.is-visible > *:nth-child(12) { transition-delay: 0.54s; }
+
+        @media (max-width: 900px) {
+            .hero-metrics,
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-panel,
+            .tools-section {
+                padding: 28px;
+            }
+
+            .section-head {
+                align-items: start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .page-shell {
+                width: min(100% - 24px, 1180px);
+            }
+
+            .hero {
+                min-height: auto;
+                padding-top: 12px;
+            }
+
+            .hero-panel {
+                padding: 22px;
+                border-radius: 22px;
+            }
+
+            h1 {
+                font-size: clamp(2.5rem, 14vw, 4rem);
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .card,
+            .tools-section {
+                padding: 22px;
+                border-radius: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <section class="hero reveal is-visible">
+            <div class="hero-panel">
+                <span class="eyebrow">Apresenta&ccedil;&atilde;o AI First</span>
+                <h1>Primeiro os rituais. Depois as ferramentas.</h1>
+                <p class="hero-lead">
+                    A ideia &eacute; conduzir a conversa em duas camadas: come&ccedil;amos pelo comportamento e pelos encontros que criam cultura, e s&oacute; depois mostramos quais ferramentas entram para sustentar isso.
+                </p>
+                <div class="hero-actions">
+                    <a class="button primary" href="#rituais">Come&ccedil;ar pelos rituais</a>
+                    <a class="button secondary" href="#ferramentas">Ir para ferramentas</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="rituais" class="section reveal">
+            <div class="section-head">
+                <div>
+                    <div class="section-tag">Etapa 1</div>
+                    <h2>Rituais que colocam IA em movimento</h2>
+                </div>
+                <p>
+                    Antes de falar de ferramenta, o ponto principal &eacute; definir uma rotina vis&iacute;vel. Esses encontros fazem a ado&ccedil;&atilde;o sair do discurso e virar h&aacute;bito.
+                </p>
+            </div>
+
+            <div class="ritual-grid stagger">
+                <article class="card">
+                    <span class="card-index">01</span>
+                    <h3>P&iacute;lula AI</h3>
+                    <p>Grupo no Google Chat para trocar experi&ecirc;ncias, compartilhar not&iacute;cias, descobrir novidades e manter o time pr&oacute;ximo do que est&aacute; mudando no universo da IA.</p>
+                    <span class="badge">Google Chat</span>
+                </article>
+
+                <article class="card">
+                    <span class="card-index">02</span>
+                    <h3>Demos ao vivo</h3>
+                    <p>Encontro r&aacute;pido para mostrar novidades, testar ideias e expor aplica&ccedil;&otilde;es reais que j&aacute; melhoram o dia a dia da empresa.</p>
+                    <span class="badge">Quinta-feira</span>
+                </article>
+
+                <article class="card">
+                    <span class="card-index">03</span>
+                    <h3>Retro IA</h3>
+                    <p>Momento dos embaixadores para acompanhar resultados, medir ganhos com IA nos processos e alinhar pend&ecirc;ncias ou pr&oacute;ximos passos.</p>
+                    <span class="badge">Embaixadores</span>
+                </article>
+
+                <article class="card">
+                    <span class="card-index">04</span>
+                    <h3>Hackathons</h3>
+                    <p>Blocos pr&aacute;ticos de at&eacute; 2 horas para reunir o time, testar solu&ccedil;&otilde;es e transformar problemas reais em experimentos de alta velocidade.</p>
+                    <span class="badge">M&atilde;o na massa</span>
+                </article>
+            </div>
+
+        </section>
+
+        <section id="ferramentas" class="section reveal">
+            <div class="section-head">
+                <div>
+                    <div class="section-tag">Etapa 2</div>
+                    <h2>Ferramentas por uso</h2>
+                </div>
+                <p>
+                    Depois dos rituais, entra o mapa de ferramentas. A ideia aqui &eacute; simples: cada uso aponta para uma plataforma principal, sem poluir a tela antes da hora.
+                </p>
+            </div>
+
+            <div class="tools-section reveal">
+                <div class="tools-grid stagger">
+                    <article class="tool-card">
+                        <span class="use-label">Cria&ccedil;&atilde;o de m&uacute;ltiplos agentes</span>
+                        <span class="tool-pill">ChatGPT</span>
+                        <p class="tool-text">Orquestrar agentes para executar tarefas paralelas e fluxos mais complexos.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">IA geral</span>
+                        <span class="tool-pill">Gemini</span>
+                        <p class="tool-text">Apoio amplo para perguntas, produ&ccedil;&atilde;o de texto, an&aacute;lises e tarefas do dia a dia.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">Slides</span>
+                        <span class="tool-pill">Gamma Slides.ia</span>
+                        <p class="tool-text">Montar apresenta&ccedil;&otilde;es com estrutura, narrativa e visual mais r&aacute;pido.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">Imagem</span>
+                        <span class="tool-pill">Nano Banana</span>
+                        <p class="tool-text">Gerar imagens para conceitos, campanhas e materiais visuais.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">Aprender r&aacute;pido</span>
+                        <span class="tool-pill">Notebook LM</span>
+                        <p class="tool-text">Absorver conte&uacute;dos, resumir materiais e organizar entendimento de temas.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">Pesquisa</span>
+                        <span class="tool-pill">Perplexity</span>
+                        <p class="tool-text">Buscar respostas com foco em descoberta, contexto e fontes.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">Ideias</span>
+                        <span class="tool-pill">Claude</span>
+                        <p class="tool-text">Explorar caminhos, ampliar perspectivas e estruturar racioc&iacute;nios.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">C&oacute;digo</span>
+                        <span class="tool-pill">Claude Code</span>
+                        <p class="tool-text">Acelerar implementa&ccedil;&atilde;o, revis&atilde;o e itera&ccedil;&atilde;o t&eacute;cnica no desenvolvimento.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">V&iacute;deo</span>
+                        <span class="tool-pill">Higgsfield</span>
+                        <p class="tool-text">Criar pe&ccedil;as em v&iacute;deo e explorar produ&ccedil;&otilde;es visuais com IA.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">App</span>
+                        <span class="tool-pill">Claude Code</span>
+                        <p class="tool-text">Desenvolver aplica&ccedil;&otilde;es com apoio direto na constru&ccedil;&atilde;o e ajustes.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">Interfaces para aplicativos</span>
+                        <span class="tool-pill">Stitch</span>
+                        <p class="tool-text">Desenhar interfaces e fluxos com foco em prototipa&ccedil;&atilde;o de produto.</p>
+                    </article>
+                    <article class="tool-card">
+                        <span class="use-label">Refer&ecirc;ncias de telas</span>
+                        <span class="tool-pill">Dribbble</span>
+                        <p class="tool-text">Pesquisar repert&oacute;rio visual e buscar inspira&ccedil;&otilde;es de layout e UI.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const revealItems = document.querySelectorAll('.reveal, .stagger');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.16,
+            rootMargin: '0px 0px -8% 0px'
+        });
+
+        revealItems.forEach((item) => {
+            if (!item.classList.contains('is-visible')) {
+                observer.observe(item);
+            }
+        });
+    </script>
+</body>
+</html>
